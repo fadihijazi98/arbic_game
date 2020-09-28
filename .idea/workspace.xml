@@ -141,6 +141,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
@@ -162,7 +163,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1601120637147</updated>
-      <workItem from="1601120638400" duration="17199000" />
+      <workItem from="1601120638400" duration="35502000" />
     </task>
     <servers />
   </component>
@@ -182,9 +183,9 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="660" y="252" key="run.anything.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1601121640771" />
-    <state x="659" y="259" width="672" height="678" key="search.everywhere.popup" timestamp="1601206563989">
+    <state x="659" y="259" width="672" height="678" key="search.everywhere.popup" timestamp="1601246739828">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
-    <state x="659" y="259" width="672" height="678" key="search.everywhere.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1601206563989" />
+    <state x="659" y="259" width="672" height="678" key="search.everywhere.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1601246739828" />
   </component>
 </project>
