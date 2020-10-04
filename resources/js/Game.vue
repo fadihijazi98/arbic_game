@@ -11,7 +11,8 @@
             </div>
         </div>
 
-        <div class="modal fade" id="question" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="question" tabindex="-1"  data-backdrop="false" data-keyboard="false"
+             aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -21,10 +22,10 @@
                     </div>
                     <div class="modal-body">
                         <h2 class="text-right text-danger">
-                            {{ questionSelected.title }}
+                            {{this.questionSelected.title }}
                         </h2>
                         <p class="text-right" style="font-size: 22px">
-                            {{ questionSelected.content }}
+                            {{ this.questionSelected.content }}
                         </p>
                         <div class="text-danger text-center">
                             <h2>
@@ -75,21 +76,43 @@ export default {
             questionSelected: ""
         };
     },
+    watch:{
+        timer: function() {
+            this.$emit("selected-timer", this.timer);
+        },
+    },
     methods: {
         selectedQuestion(question, i) {
+            axios.post('/selected/save', question)
+                .then(function (response) {
+                    // this.myTickers.unshift({title:this.toSave.title, is_published: this.toSave.is_published=0,
+                    //     id: response.data.id, created_at:response.data.created_at});
+                    // this.toSave={}
+                });
             this.questionSelected = question;
+
             this.timer = this.questionSelected.duration;
+
+            this.timeDown();
+
             document.getElementById("btn"+i).classList.add("d-none");
         },
         addScore() {
             this.score += 1;
             this.incQuestionsView();
+
         },
         incQuestionsView() {
             this.questionsView += 1;
+            this.timer =0 ;
         },
         timeDown() {
-            alert(this.timer);
+            if(this.timer > 0) {
+                setTimeout(() => {
+                    this.timer -= 1
+                    this.timeDown()
+                }, 1000)
+            }
         }
     }
 

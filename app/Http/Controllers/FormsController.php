@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Form;
 use App\Models\Question;
+use App\Models\SessionAnswers;
+use App\Models\Sessions;
 use Illuminate\Http\Request;
 
 class FormsController extends Controller
@@ -16,6 +18,34 @@ class FormsController extends Controller
     public function index()
     {
         return  view("forms.index", ['forms'=>(Form::orderBy("created_at", "desc")->get())]);
+    }
+
+    public function preview($id){
+        Sessions::create([
+            'form_id' => $id
+        ]);
+        $questions= Question::all()->where('form_id', $id)->values();
+        return view('game.preview',compact('questions'));
+    }
+    public  function saveSeleted(Request $request){
+        SessionAnswers::create([
+            'question_id' => $request->id,
+            'question_title' => $request->title,
+            'session_id' =>$request->form_id,
+            'status'=> false,
+            'duration'=> $request->duration
+        ]);
+
+    }
+    public function fetch(){
+        $lastSelected= SessionAnswers::latest('created_at')->first();
+        return response()->json($lastSelected);
+    }
+    public function updateStatus(Request $request){
+        $question = SessionAnswers::find($request->id);
+        $question->status  = $request->item['status'];
+        $question->save();
+        return response()->json($question);
     }
 
     /**

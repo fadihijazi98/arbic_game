@@ -5,13 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Form extends Model
+class Sessions extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'form_id',
+    ];
 
-    protected $guarded = ['id'];
+    public function form()
+    {
+        return $this->belongsTo(Form::class, 'id', 'form_id');
+    }
 
-    public function sessions()
+    public function answers()
     {
         return $this->hasMany(SessionAnswers::class,'session_id');
     }
