@@ -18,8 +18,24 @@
 </head>
 <body>
     <div id="app">
-        <game :questions="{{$questions}}"></game>
+        @if(auth()->check())
+            <div class="text-center p-4 position-absolute">
+                <a href="/preview/{{$session_id}}/admin" class="d-block" target="_blank">
+                    <button dir="rtl" class="btn btn-lg btn-light">
+                        عرض لوحة التحكم
+                    </button>
+                </a>
+            </div>
+        @endif
+        <game :session_id="{{$session_id}}"></game>
     </div>
+    <footer style="border-top: #ccc 1px solid;position: absolute;
+    width: 100%;
+    bottom: 0;">
+        <div class="text-center p-2">
+            تم تطوير الموقع من قبل ( فادي حجازي ، شهد خندقجي )
+        </div>
+    </footer>
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>

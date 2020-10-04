@@ -20,20 +20,20 @@
 <div id="app">
     <header style="height: 100px; background-color: #0665d0" class="py-5 text-right text-white">
         <div class="bg-header-dark" style="padding-right: 50px">
-            <div class="content-header bg-white-10">
+            <div class="content-header bg-white-10 text-center">
                 <h3>قائمة الأسئلة</h3>
             </div>
         </div>
 
     </header>
     <main style="margin-top: 70px; margin-right: 50px">
-        <admin></admin>
+        <admin :session_id="{{$session_id}}"></admin>
     </main>
-    <footer style="background-color: #f9fafc;position: absolute;
+    <footer style="border-top: #ccc 1px solid;position: absolute;
     width: 100%;
     bottom: 0;">
-                <div class="text-center py-4">
-                    2020 ©  All rights reserved
+                <div class="text-center p-2">
+                    تم تطوير الموقع من قبل ( فادي حجازي ، شهد خندقجي )
                 </div>
     </footer>
 </div>

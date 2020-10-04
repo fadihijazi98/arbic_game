@@ -1,100 +1,132 @@
 <template>
 
-    <div class="row" dir="rtl">
-        <div class="col-10">
-            <table class="col-10 table table-hover table-borderless table-vcenter font-size-sm text-right" dir="rtl">
-                <thead class="thead-light">
-                <tr class="">
-                    <th class="d-sm-table-cell font-w700 "><i class="fa fa-globe-arrow-up"></i>#</th>
-                    <th class=" d-sm-table-cell font-w700">السؤال</th>
-                    <th class=" d-sm-table-cell font-w700">الاجابة</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="item in rowData" class="">
-                    <td>{{ item.col_id }}</td>
-                    <td>{{ item.title }}</td>
-                    <td>
-                        <button type="button" class="btn btn-success" @click="statusTrue(item)" :disabled="item.disabled">
-                        <span ><i class="fa fa-times text-warning mr-1"></i>
-                            إجابة صحيحة
-                        </span>
-                        </button>
-                        <button type="button" class="btn btn-danger" @click="disabled(item)" :disabled="item.disabled">
-                            <span ><i class="fa fa-check text-success mr-1"></i>إجابة خاطئة </span>
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-
-        </div>
-        <div class="col-2 text-center">
-            <h2>
-                 <span id="timer" style="padding: 40px;border: 1px solid red; border-radius: 50%;
-font-size: 20px; font-weight: bold">
+    <div class="row w-100" dir="rtl">
+        <div class="container">
+            <div class="col-12 text-center" v-if="this.rowData.length>0">
+                <h2>
+                 <span id="timer" class="text-danger"
+                       style="display:inline-flex;justify-content:center;align-items:center;width: 50px;height:50px;border: 1px solid; border-radius: 50%">
                      {{ timer }}
                  </span>
-            </h2>
+                </h2>
+            </div>
+            <div class="col-12 mt-4">
+                <table
+                    class="col-10 table table-hover table-borderless table-vcenter font-size-sm text-right text-center"
+                    dir="rtl">
+                    <thead class="thead-light">
+                    <tr class="">
+                        <th class="d-sm-table-cell font-w700 "><i class="fa fa-globe-arrow-up"></i>رقم السؤال</th>
+                        <th class=" d-sm-table-cell font-w700">عنوان السؤال</th>
+                        <th class=" d-sm-table-cell font-w700">الاجابة</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="item in rowData" class="">
+                        <td>{{ item.id }}</td>
+                        <td>{{ item.title }}</td>
+                        <td>
+                            <button type="button" class="btn btn-success" @click="statusTrue(item)"
+                                    :disabled="item.disabled">
+                        <span><i class="fa fa-times text-warning mr-1"></i>
+                            إجابة صحيحة
+                        </span>
+                            </button>
+                            <button type="button" class="btn btn-danger" @click="statusFalse(item)"
+                                    :disabled="item.disabled">
+                                <span><i class="fa fa-check text-success mr-1"></i>إجابة خاطئة </span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="bg-info text-white p-4">
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+                            <h4>
+                                {{ this.scoreAsText }}
+                            </h4>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-name: "Admin.vue",
+    name: "Admin.vue",
     mounted() {
         this.fetch();
     },
-    data:function () {
-        return{
+    props: {
+        session_id: {
+            type: Number,
+            required: true
+        }
+    },
+    data: function () {
+        return {
             timer: 0,
             score: 0,
             questionsView: 0,
             title: '',
-            rowData:[],
-            id : 0
+            rowData: [],
+            scoreAsText: '',
+            id: 0,
         }
     },
     directives: {
-        myMountedDirective (el, { value }) {
+        myMountedDirective(el, {value}) {
             console.log(value + 'jjj')
 
         }
     },
-    methods:{
-        fetch(){
+    methods: {
+        fetch() {
             setInterval(() => this.fetchQuestion(), 1000)
         },
-        countDown(){
-            if(this.timer > 1) {
+        countDown() {
+            if (this.timer > 0) {
                 setTimeout(() => {
                     this.timer -= 1
                     this.countDown()
                 }, 1000)
             }
         },
-        fetchQuestion(){
-            axios.get('/fetch')
-                .then( (response) => {
-                    if(this.title != response.data.question_title) {
-                        this.timer=0;
+        fetchQuestion() {
+            axios.get('/fetch?session_id=' + this.session_id)
+                .then((response) => {
+                    if (this.title != response.data.question_title && response.data.question_title != undefined) {
+                        this.timer = 0;
                         this.rowData.push({
-                            id: response.data.question_id,title: response.data.question_title, timer: response.data.duration,
-                            status: response.data.status, disabled: false , col_id: this.id ++
+                            id: response.data.question_id,
+                            title: response.data.question_title,
+                            timer: response.data.duration,
+                            status: response.data.status,
+                            disabled: false,
+                            col_id: this.id++
                         });
                         this.timer = response.data.duration;
-                        this.countDown()
-                        this.id +=1;
+                        this.countDown();
+                        this.id += 1;
                     }
-                     this.title = response.data.question_title;
+                    this.scoreAsText = response.data.scoreAsText;
+                    this.title = response.data.question_title;
                 });
         },
-        statusTrue(item){
+        statusTrue(item) {
+            this.timer = 1;
             item.status = true;
-
             axios.patch('/question/updateStatus/' + item.id, {
-                item,})
+                item,
+            })
                 .then(function (response) {
                 }), error => {
                 if (error.code == 500) {
@@ -102,11 +134,21 @@ name: "Admin.vue",
                 }
             }
         },
-        disabled(item){
-            item.disabled= true;
+        statusFalse(item) {
+            this.timer = 1;
+            item.status = false;
+            axios.patch('/question/updateStatus/' + item.id, {
+                item,
+            })
+                .then(function (response) {
+                }), error => {
+                if (error.code == 500) {
+                    console.log(error.data)
+                }
+            }
         },
-        addScore(item){
-            this.score+=1;
+        addScore(item) {
+            this.score += 1;
             this.disabled(item)
         },
     }

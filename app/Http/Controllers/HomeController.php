@@ -26,7 +26,9 @@ class HomeController extends Controller
         return view('home');
     }
     public function admin(){
-        return view('game.admin-preview');
+        preg_match('/\/preview\/(.+?)\//', \request()->getPathInfo(), $result);
+        $session_id = $result[1];
+        return view('game.admin-preview', compact('session_id'));
 
     }
 

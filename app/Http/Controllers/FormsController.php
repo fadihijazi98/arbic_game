@@ -20,29 +20,46 @@ class FormsController extends Controller
         return  view("forms.index", ['forms'=>(Form::orderBy("created_at", "desc")->get())]);
     }
 
-    public function preview($id){
-        Sessions::create([
+    public function preview($id) {
+        $formId = Sessions::find($id)->form_id;
+        $questions= Question::all()->where('form_id', $formId)->values();
+        return view('game.preview', ['questions'=>$questions, 'session_id'=>$id]);
+    }
+
+    public function newSession($id) {
+        $session = Sessions::create([
             'form_id' => $id
         ]);
-        $questions= Question::all()->where('form_id', $id)->values();
-        return view('game.preview',compact('questions'));
+        return redirect('/preview/'.$session->id);
     }
-    public  function saveSeleted(Request $request){
-        SessionAnswers::create([
-            'question_id' => $request->id,
-            'question_title' => $request->title,
-            'session_id' =>$request->form_id,
-            'status'=> false,
-            'duration'=> $request->duration
-        ]);
 
+    public  function saveSeleted(Request $request){
+        $sessionId = $request[1];
+        SessionAnswers::create([
+            'question_id' => $request[0]['id'],
+            'question_title' => $request[0]['title'],
+            'session_id' =>$sessionId,
+            'status'=> false,
+            'duration'=> $request[0]['duration']
+        ]);
+        return "hello world";
     }
     public function fetch(){
-        $lastSelected= SessionAnswers::latest('created_at')->first();
+        $sessionId = \request()->get("session_id");
+        $scoreAsText = $this->getScore($sessionId);
+        $lastSelected= SessionAnswers::where('session_id', $sessionId)->latest('created_at')->first();
+        $lastSelected["scoreAsText"] = $scoreAsText;
         return response()->json($lastSelected);
     }
-    public function updateStatus(Request $request){
-        $question = SessionAnswers::find($request->id);
+
+    public function fetchQuestions($session_id) {
+        $session_questions = SessionAnswers::all()->where('session_id', $session_id)->pluck('question_id');
+        $response = Question::all()->where('form_id', Sessions::find($session_id)->form_id)->whereNotIn('id', $session_questions);
+        return $response->values();
+    }
+
+    public function updateStatus(Request $request) {
+        $question = SessionAnswers::where('question_id', $request->id)->latest()->first();
         $question->status  = $request->item['status'];
         $question->save();
         return response()->json($question);
@@ -122,5 +139,16 @@ class FormsController extends Controller
     {
         Form::find(request('id'))->delete();
         return back()->with("success", "تم الحذف بنجاح");
+    }
+
+    public function getScore($session_id) {
+        $form = Sessions::find($session_id)->form_id;
+        $answers = sizeof(Question::all()->where('form_id', $form));
+        $count_answers_true = sizeof(SessionAnswers::all()->where('session_id', $session_id)->where('status', 1));
+        $text = "التحصيل: ";
+        $text .= $count_answers_true;
+        $text .= " من ";
+        $text .= "$answers";
+        return $text;
     }
 }

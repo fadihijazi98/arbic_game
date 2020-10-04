@@ -12,7 +12,7 @@ class SessionAnswers extends Model
         'question_id','question_title','session_id', 'status','duration'
     ];
 
-    public function sessionAnswers()
+    public function sessions()
     {
         return $this->belongsTo(Sessions::class, 'id', 'session_id');
     }

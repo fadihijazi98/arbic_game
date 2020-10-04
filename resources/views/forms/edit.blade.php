@@ -80,8 +80,8 @@
             <div class="col-md-4">
                 <div class="card p-4">
                     <p class="">عرض هذا النموذج ك مسابقة</p>
-                    <a href="/preview/{{$form->id}}" class="d-block">
-                        <button class="btn btn-primary w-100    ">عرض</button>
+                    <a href="/new_session/{{$form->id}}" class="d-block" target="_blank">
+                        <button class="btn btn-primary w-100">عرض</button>
                     </a>
                 </div>
             </div>

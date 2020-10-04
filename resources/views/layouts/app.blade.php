@@ -83,6 +83,13 @@
         <main class="py-4">
             @yield('content')
         </main>
+        <footer style="border-top: #ccc 1px solid;position: absolute;
+    width: 100%;
+    bottom: 0;">
+            <div class="text-center p-2">
+                تم تطوير الموقع من قبل ( فادي حجازي ، شهد خندقجي )
+            </div>
+        </footer>
     </div>
 </body>
 </html>
