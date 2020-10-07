@@ -20,7 +20,7 @@
                             data-target="#question" @click="selectedQuestion(question, i)">
                         <h3>
                             السؤال :
-                            {{ question.id }}
+                            {{ question.title }}
                         </h3>
                     </button>
                 </div>
@@ -41,6 +41,9 @@
                             <p class="text-right" style="font-size: 22px">
                                 {{ this.questionSelected.content }}
                             </p>
+                            <div style="padding: 4px; margin: 2px" v-if="questionSelected.image_path!='storage/'">
+                                <img :src="`/`+questionSelected.image_path" style="max-width: 100%" />
+                            </div>
                             <div class="text-danger text-center">
                                 <h2>
                                 <span id="timer"

@@ -10,6 +10,16 @@
 
             </div>
         @endif
+        @error('image')
+            <div class="alert alert-danger alert-dismissible fade show">
+                لم يتم رفع الصورة، الرجاء التأكد من امتداد الصورة
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
+        @enderror
+
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
@@ -138,7 +148,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="/question" method="post">
+                    <form action="/question" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="modal-body">
                             <input hidden name="form_id" value="{{$form->id}}">
@@ -154,6 +164,34 @@
                             <div class="form-group">
                                 <label for="content" class="col-form-label">محتوى السؤال:</label>
                                 <textarea placeholder="نص" class="form-control" id="content" name="content"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <div class="row py-4">
+                                    <div class="col-12 mx-auto">
+
+                                        <!-- Upload image input-->
+                                        <div
+                                            class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm text-center">
+                                            <input id="upload" type="file" onchange="readURL(this);"
+                                                   class="form-control border-0" name="image">
+                                            <label id="upload-label" for="upload" class="font-weight-light text-muted">ارفقي
+                                                صورة</label>
+                                            <div class="input-group-append">
+                                                <label for="upload" class="btn btn-light m-0 rounded-pill px-4">
+                                                    <i class="fa fa-cloud-upload mr-2 p-2 text-muted"></i>
+                                                    <span class="text-uppercase p-2 font-weight-bold text-muted">ارفقي صورة</span></label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Uploaded image area-->
+                                        <p class="font-italic text-white text-center">The image uploaded will be
+                                            rendered inside the box below.</p>
+                                        <div class="image-area mt-4"><img id="imageResult" src="#" alt=""
+                                                                          class="img-fluid rounded shadow-sm mx-auto d-block">
+                                        </div>
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -196,9 +234,26 @@
                                 <div class="form-group">
                                     <label for="content" class="col-form-label">محتوى السؤال:</label>
                                     <textarea placeholder="نص" class="form-control" id="content" name="content"
-                                              >{{$question->content}}</textarea>
+                                    >{{$question->content}}</textarea>
                                 </div>
                             </div>
+                            <!--ins-->
+                            <div class="form-group">
+                                <div class="row py-4">
+                                    <div class="col-12 mx-auto">
+
+                                        <!-- Uploaded image area-->
+                                        <p class="font-italic text-white text-center">The image uploaded will be
+                                            rendered inside the box below.</p>
+                                        <div class="image-area mt-4">
+                                            <img id="imageResult" src="{{asset($question->image_path)}}" alt=""
+                                                                          class="img-fluid rounded shadow-sm mx-auto d-block">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">اغلاق</button>
                                 <button type="submit" class="btn btn-primary">تعديل</button>
